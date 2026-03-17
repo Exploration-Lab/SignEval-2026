@@ -73,10 +73,10 @@ def get_split_order_ids(cfg, task: str, mode: str):
     Return IDs in the exact order of the official split file used by this repo.
 
     Repo convention (MSLR):
-        ./datasets/mslr2025/{task}_{mode}_info.json
+        ./datasets/mslr/{task}_{mode}_info.json
     where task is "us" or "si", mode is "dev" or "test".
     """
-    info_path = f"./datasets/mslr2025/{task}_{mode}_info.json"
+    info_path = f"./datasets/mslr/{task}_{mode}_info.json"
     if not os.path.exists(info_path):
         raise FileNotFoundError(
             f"Split file not found: {info_path}\n"
