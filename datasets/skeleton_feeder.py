@@ -59,7 +59,7 @@ class SkeletonFeeder(data.Dataset):
                         inputs_list_temp = json.load(f)
                         inputs_list.extend(inputs_list_temp)
             else:
-                with open(f"./datasets/mslr2025/{self.setting}_{mode}_info.json", 'r') as f:
+                with open(f"./datasets/mslr/{self.setting}_{mode}_info.json", 'r') as f:
                     # dataset info
                     inputs_list = json.load(f)
             with open("./datasets/pose_data_isharah2000_hands_lips_{self.setting.upper()}_SI.pkl", "rb") as f:
