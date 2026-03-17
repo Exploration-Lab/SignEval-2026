@@ -90,7 +90,7 @@ def get_parser():
     # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
     # long term temporal encoder
     parser.add_argument(
-        "--temporal_encoder",
+        "--long_term_model",
         type=str,
         default="bilstm",
         choices=["bilstm", "transformer"],
