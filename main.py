@@ -175,10 +175,10 @@ class SLRProcessor(object):
     def loading(self):
         # Set GPU device selection inside their wrapper
         self.device.set_device(self.arg.device)
-        if "temporal_encoder" not in self.arg.model_args:
-            self.arg.model_args["temporal_encoder"] = "bilstm"
-        if self.arg.temporal_encoder is not None:
-            self.arg.model_args["temporal_encoder"] = self.arg.temporal_encoder
+        if "long_term_model" not in self.arg.model_args:
+            self.arg.model_args["long_term_model"] = "bilstm"
+        if self.arg.long_term_model is not None:
+            self.arg.model_args["long_term_model"] = self.arg.long_term_model
         
         print("Loading model")
         model = self.build_module(self.arg.model_args)
