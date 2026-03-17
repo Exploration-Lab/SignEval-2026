@@ -40,18 +40,11 @@ class SkeletonFeeder(data.Dataset):
         self.transform_mode = "train" if transform_mode else "test"
         self.dataset = dataset
         self.used_part = used_part
-        # if mode == 'test':
-        #     with open(f"/DATACSEShare/sanjeet/dattatreya/Pose86K-CSLR-Isharah/SI_test.pkl", "rb") as f:
-        #         #
-        #         #/DATACSEShare/sanjeet/dattatreya/Pose86K-CSLR-Isharah/SI_test.pkl
-        #         # test data
-        #         self.kps_global = pickle.load(f)
-        #         self.inputs_list = list(range(1, len(self.kps_global)+2))
         if mode == 'test':
-            with open("/DATACSEShare/sanjeet/dattatreya/Pose86K-CSLR-Isharah/SI_test.pkl", "rb") as f:
+            with open("./datasets/pose_data_isharah1000_{self.setting.upper()}_test.pkl", "rb") as f:
                 self.kps_global = pickle.load(f)
 
-            # ✅ use real IDs from the pickle (string keys like "08_0001")
+            #  use real IDs from the pickle (string keys like "08_0001")
                 self.inputs_list = sorted(self.kps_global.keys())
 
                 missing = []
@@ -61,7 +54,7 @@ class SkeletonFeeder(data.Dataset):
             if len(self.mode_list) == 2:
                 inputs_list = []
                 for mode_type in self.mode_list:
-                    with open(f"./datasets/mslr2025/{self.setting}_{mode_type}_info.json", 'r') as f:
+                    with open(f"./datasets/mslr/{self.setting}_{mode_type}_info.json", 'r') as f:
                         # dataset info
                         inputs_list_temp = json.load(f)
                         inputs_list.extend(inputs_list_temp)
@@ -69,16 +62,12 @@ class SkeletonFeeder(data.Dataset):
                 with open(f"./datasets/mslr2025/{self.setting}_{mode}_info.json", 'r') as f:
                     # dataset info
                     inputs_list = json.load(f)
-            with open("/DATACSEShare/sanjeet/dattatreya/Pose86K-CSLR-Isharah/iccv1/MSLR_ICCV2025-main/datasets/pose_data_isharah2000_hands_lips_body_phase1_SI.pkl", "rb") as f:
+            with open("./datasets/pose_data_isharah2000_hands_lips_{self.setting.upper()}_SI.pkl", "rb") as f:
                 
                 # all data
                 self.kps_global = pickle.load(f)
 
             self.inputs_list = list()
-            # print("inputs_list sample:", self.inputs_list[:5])
-            # print("inputs_list type[0]:", type(self.inputs_list[0]))
-            # print("kps_global key sample:", list(self.kps_global.keys())[:5])
-            # print("kps_global key type:", type(list(self.kps_global.keys())[0]))
             for item in inputs_list:
                 if item['video_id'] in self.kps_global.keys():
                     self.inputs_list.append(item)
@@ -144,35 +133,6 @@ class SkeletonFeeder(data.Dataset):
                 new_list.append(fi)
         new_list.append(self.inputs_list['prefix'])
         return new_list
-
-    # def read_pose(self, index, num_glosses=-1):
-    #     # load file info
-    #     if self.mode == 'test':
-    #         key = self.inputs_list[index]
-    #         if key not in self.kps_global:
-    #             print("MISSING KEY:", key, "type:", type(key))
-    #             # show what keys look like
-    #             some_keys = list(self.kps_global.keys())[:5]
-    #             print("EXAMPLE kps_global keys:", some_keys, "types:", [type(k) for k in some_keys])
-    #             raise KeyError(key)
-    #         pose_data = self.kps_global[self.inputs_list[index]]['keypoints']
-    #         label_list = 1
-    #         fi = '[EMPTY]'
-    #     else:
-    #         fi = self.inputs_list[index]
-    #         pose_data = self.kps_global[fi['video_id']]['keypoints']
-    #         label = fi['gloss_sequence']
-    #         label_list = []
-    #         for phase in label.split(" "):
-    #             if phase == '':
-    #                 continue
-    #             if phase in self.dict.keys():
-    #                 label_list.append(self.dict[phase])
-    #     return (
-    #         pose_data,
-    #         label_list,
-    #         fi,
-    #     )
         
     def read_pose(self, index, num_glosses=-1):
         if self.mode == 'test':
@@ -184,7 +144,7 @@ class SkeletonFeeder(data.Dataset):
                 raise KeyError(key)
 
             pose_data = self.kps_global[key]['keypoints']
-            label_list = [0]    # ✅ dummy label so collate_fn returns dict
+            label_list = [0]    #  dummy label so collate_fn returns dict
             fi = str(key)
         else:
             fi = self.inputs_list[index]
