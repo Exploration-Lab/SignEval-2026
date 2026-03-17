@@ -52,7 +52,7 @@ model_args:
     CR_Conv_fusion: 2.0
     CR_Seq_fusion: 2.0
   norm_scale: 32
-  temporal_encoder: bilstm
+  long_term_model: bilstm
 
 # optim args
 
