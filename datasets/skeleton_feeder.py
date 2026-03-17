@@ -41,7 +41,7 @@ class SkeletonFeeder(data.Dataset):
         self.dataset = dataset
         self.used_part = used_part
         if mode == 'test':
-            with open("./datasets/pose_data_isharah1000_{self.setting.upper()}_test.pkl", "rb") as f:
+            with open("./datasets/pose_data_isharah2000_{self.setting.upper()}_test.pkl", "rb") as f:
                 self.kps_global = pickle.load(f)
 
             #  use real IDs from the pickle (string keys like "08_0001")
