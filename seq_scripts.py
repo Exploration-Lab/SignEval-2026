@@ -156,7 +156,7 @@ def seq_eval(cfg, loader, model, device, mode, epoch, work_dir, recoder, task, e
     
     if mode == "test":
     #  use the provided ids-only test.csv as the ordering
-        REF_TEST_IDS = "/DATACSEShare/sanjeet/dattatreya/Pose86K-CSLR-Isharah/annotations_v2/isharah2000/SI/test.csv"   # <-- change this path
+        REF_TEST_IDS = "./annotations_v2/isharah2000/SI/test.csv"   # <-- change this path
         ordered_ids = read_reference_ids_csv(REF_TEST_IDS)
 
         csv_file = f"{work_dir}test.csv"
