@@ -1,5 +1,8 @@
 # SignEval-2026
 # EL-IITK @ SignEval 2026: BiLSTM and Transformer Based Alignment for Skeleton-Based Continuous Sign Language Recognition
+<img width="855" height="479" alt="image" src="https://github.com/user-attachments/assets/223cfde1-a4b8-4000-b761-d1ca47a3bd2c" />
+
+Figure 1: Overview of the proposed skeleton-based CSLR pipeline.  
 
 **Challenge:** SignEval 2026 – Track 1 (Continuous Sign Language Recognition)  
 **Dataset:** Isharah2000 (~30,000 videos, 2,000 unique Saudi sign language sentences, 18 signers)  
@@ -58,9 +61,7 @@ These task-specific architectural choices enable strong generalization and place
 
 ## 🏗️ Architecture Overview
 
-<img width="855" height="479" alt="image" src="https://github.com/user-attachments/assets/223cfde1-a4b8-4000-b761-d1ca47a3bd2c" />
 
-Figure 1: Overview of the proposed skeleton-based CSLR pipeline.  
 Skeleton keypoint sequences → **GCN Encoder** (group-wise) → **1D CNN** (short-term) → **BiLSTM or Transformer** (long-term alignment) → Gloss sequence (CTC).
 
 
@@ -83,3 +84,139 @@ Figure 2: Exact match prediction (Arabic gloss sequence).
 <img width="920" height="867" alt="image" src="https://github.com/user-attachments/assets/3a116a14-2622-4f5d-b81e-584501e7b7d1" />
 
 Figure 3: Model correctly captures core meaning (“craving pasta”) even when phrasing differs slightly from ground truth
+
+
+
+### Setup & Usage Guide
+
+Follow these steps to setup environment, prepare data, and run training/evaluation
+
+#### 1. Install Dependencies
+
+Install virtualenv (optional)
+
+pip install virtualenv
+
+Create virtual environment
+
+python -m venv pose
+
+Activate environment
+
+Linux / Mac
+
+source pose/bin/activate
+
+Windows
+
+pose\Scripts\activate
+
+Install required libraries
+
+pip install torch==1.13 torchvision==0.14 tqdm numpy==1.23.5 pandas opencv-python
+
+Install CTCDecode
+
+git clone --recursive https://github.com/parlance/ctcdecode.git
+cd ctcdecode
+pip install .
+cd ..
+
+#### 2. Clone Repository
+git clone https://github.com/Exploration-Lab/SignEval-2026.git
+cd SignEval-2026
+#### 3. Dataset Setup
+
+Download the dataset TASK1[https://www.kaggle.com/datasets/gufransabri3/mslr-task1] and 
+TASK2[https://www.kaggle.com/datasets/gufransabri3/mslr-task2]
+ and place it in the ./datasets folder
+
+SignEval-2026/
+│── datasets/
+
+Download the annotation [https://github.com/gufranSabri/Pose86K-CSLR-Isharah/tree/main/annotations_v2] and place it in:
+
+./preprocess/mslr2025
+4. Install sclite (for evaluation)
+
+Install kaldi toolkit to get sclite from sctk
+
+After installation, create a soft link:
+
+mkdir ./software
+ln -s PATH_TO_KALDI/tools/sctk-2.4.10/bin/sclite ./software/sclite
+5. Preprocess Dataset
+
+Run preprocessing to generate:
+
+gloss dictionary
+
+dataset info
+
+ground truth for evaluation
+
+cd ./preprocess/mslr2025
+python mslr_process.py
+6. Training & Evaluation
+Signer Independent
+Train
+python main.py --config ./configs/Double_Cosign_si.yaml --long_term_model bilstm
+
+or
+
+python main.py --config ./configs/Double_Cosign_si.yaml --long_term_model transformer
+Test
+python main.py --config ./configs/Double_Cosign_si.yaml \
+--long_term_model bilstm \
+--phase test \
+--load-weights PATH_TO_PRETRAINED_MODEL
+
+or
+
+python main.py --config ./configs/Double_Cosign_si.yaml \
+--long_term_model transformer \
+--phase test \
+--load-weights PATH_TO_PRETRAINED_MODEL
+Unseen Sentences
+Train
+python main.py --config ./configs/Double_Cosign_us.yaml --long_term_model bilstm
+
+or
+
+python main.py --config ./configs/Double_Cosign_us.yaml --long_term_model transformer
+Test
+python main.py --config ./configs/Double_Cosign_us.yaml \
+--phase test \
+--long_term_model bilstm \
+--load-weights PATH_TO_PRETRAINED_MODEL
+
+or
+
+python main.py --config ./configs/Double_Cosign_us.yaml \
+--phase test \
+--long_term_model transformer \
+--load-weights PATH_TO_PRETRAINED_MODEL
+7. Notes
+
+Different tasks need different data augmentation strategies during training
+
+Modify it in:
+
+./datasets/skeleton_feeder.py  (line 207)
+
+Important for:
+
+signer independent setup
+
+unseen sentence generalization
+
+--long_term_model supports:
+
+bilstm
+
+transformer
+
+Replace PATH_TO_PRETRAINED_MODEL with actual checkpoint path
+
+For additional arguments / parameters:
+./utils/paramters.py
